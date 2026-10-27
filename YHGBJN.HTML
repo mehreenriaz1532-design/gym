@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA FITNESS | Forge Your Legacy</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0a0a0c',
+                        cardBg: '#121216',
+                        glassBg: 'rgba(18, 18, 22, 0.75)',
+                        neonAccent: '#ff3b30',
+                        neonAmber: '#ff6b00',
+                        glowCyan: '#00f2fe'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0c;
+            color: #e4e4e7;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .font-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .glass-card {
+            background: rgba(18, 18, 22, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-nav {
+            background: rgba(10, 10, 12, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #ff3b30 0%, #ff6b00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glow-effect {
+            box-shadow: 0 0 25px rgba(255, 59, 48, 0.35);
+        }
+        .glow-border:hover {
+            border-color: #ff3b30;
+            box-shadow: 0 0 15px rgba(255, 59, 48, 0.4);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff3b30;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-neonAccent selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 left-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-neonAccent to-neonAmber flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid font-bold fa-bolt text-white text-xl"></i>
+                </div>
+                <span class="font-heading text-2xl font-extrabold tracking-wider text-white">AURA<span class="text-neonAccent">.FIT</span></span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="text-gray-300 hover:text-neonAccent font-medium text-sm transition-colors duration-200">Home</a>
+                <a href="#classes" class="text-gray-300 hover:text-neonAccent font-medium text-sm transition-colors duration-200">Classes</a>
+                <a href="#trainers" class="text-gray-300 hover:text-neonAccent font-medium text-sm transition-colors duration-200">Trainers</a>
+                <a href="#bmi" class="text-gray-300 hover:text-neonAccent font-medium text-sm transition-colors duration-200">BMI Calculator</a>
+                <a href="#pricing" class="text-gray-300 hover:text-neonAccent font-medium text-sm transition-colors duration-200">Pricing</a>
+                <a href="#contact" class="text-gray-300 hover:text-neonAccent font-medium text-sm transition-colors duration-200">Contact</a>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="hidden md:flex items-center space-x-4">
+                <button onclick="openAuthModal('signin')" class="text-gray-200 hover:text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition-colors">
+                    Sign In
+                </button>
+                <button onclick="openAuthModal('signup')" class="bg-gradient-to-r from-neonAccent to-neonAmber text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all duration-300 transform hover:-translate-y-0.5 shadow-md shadow-neonAccent/20">
+                    Join Now
+                </button>
+            </div>
+
+            <!-- Mobile Hamburger Toggle -->
+            <div class="md:hidden flex items-center">
+                <button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none p-2">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-card border-t border-gray-800 px-4 pt-4 pb-6 space-y-3">
+            <a href="#home" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800/60">Home</a>
+            <a href="#classes" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800/60">Classes</a>
+            <a href="#trainers" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800/60">Trainers</a>
+            <a href="#bmi" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800/60">BMI Calculator</a>
+            <a href="#pricing" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800/60">Pricing</a>
+            <a href="#contact" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800/60">Contact</a>
+            <div class="pt-4 border-t border-gray-800 flex flex-col gap-2">
+                <button onclick="openAuthModal('signin')" class="w-full text-center py-2.5 text-gray-300 font-semibold rounded-lg bg-gray-900 border border-gray-700">Sign In</button>
+                <button onclick="openAuthModal('signup')" class="w-full text-center py-2.5 text-white font-semibold rounded-lg bg-gradient-to-r from-neonAccent to-neonAmber">Join Now</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden">
+        <!-- Background Image & Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1920&auto=format&fit=crop" 
+                 alt="Gym Background" 
+                 class="w-full h-full object-cover object-center transform scale-105 transition-transform duration-10000"
+                 onerror="this.src='https://placehold.co/1920x1080/121216/ffffff?text=Aura+Fitness+Gym'">
+            <div class="absolute inset-0 bg-gradient-to-r from-darkBg via-darkBg/85 to-transparent z-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent z-10"></div>
+        </div>
+
+        <!-- Content -->
+        <div class="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div class="max-w-3xl space-y-6 text-left">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-card border border-neonAccent/30 text-neonAccent font-semibold text-xs uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-neonAccent animate-ping"></span>
+                    Premium Fitness Experience
+                </div>
+                <h1 class="font-heading text-5xl sm:text-6xl md:text-7xl font-black uppercase tracking-tight text-white leading-none">
+                    Forge Your <br><span class="text-gradient">Ultimate Legacy</span>
+                </h1>
+                <p class="text-gray-300 text-base sm:text-lg md:text-xl font-normal max-w-2xl leading-relaxed">
+                    Unleash your potential with state-of-the-art hyper-modern gear, world-class elite coaches, and tailored intensity programs built for transformative results.
+                </p>
+
+                <!-- CTA Group -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+                    <button onclick="openAuthModal('signup')" class="bg-gradient-to-r from-neonAccent to-neonAmber text-white font-bold text-base px-8 py-4 rounded-xl hover:scale-105 transition-all duration-300 shadow-xl glow-effect text-center">
+                        Start 7-Day Free Trial
+                    </button>
+                    <a href="#classes" class="glass-card text-white hover:text-neonAccent font-semibold text-base px-8 py-4 rounded-xl transition-all duration-300 border border-gray-700 hover:border-neonAccent text-center">
+                        Explore Programs
+                    </a>
+                </div>
+
+                <!-- Stats Counters -->
+                <div class="grid grid-cols-3 gap-4 sm:gap-8 pt-10 border-t border-gray-800/80 max-w-xl">
+                    <div>
+                        <span class="block font-heading text-3xl sm:text-4xl font-extrabold text-white">5K+</span>
+                        <span class="text-xs sm:text-sm text-gray-400 font-medium">Active Members</span>
+                    </div>
+                    <div>
+                        <span class="block font-heading text-3xl sm:text-4xl font-extrabold text-white">25+</span>
+                        <span class="text-xs sm:text-sm text-gray-400 font-medium">Master Coaches</span>
+                    </div>
+                    <div>
+                        <span class="block font-heading text-3xl sm:text-4xl font-extrabold text-white">24/7</span>
+                        <span class="text-xs sm:text-sm text-gray-400 font-medium">VIP Access</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs / Classes Section -->
+    <section id="classes" class="py-24 bg-darkBg relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <span class="text-neonAccent font-semibold uppercase tracking-widest text-xs">High-Intensity Training</span>
+                    <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mt-2">FEATURED <span class="text-gradient">PROGRAMS</span></h2>
+                </div>
+                <p class="text-gray-400 max-w-md mt-4 md:mt-0 text-sm">Targeted workout sessions engineered to sculpt your mind and body under expert supervision.</p>
+            </div>
+
+            <!-- Class Category Filter Tabs -->
+            <div class="flex flex-wrap gap-2 sm:gap-4 mb-10 overflow-x-auto pb-2 scrollbar-none">
+                <button onclick="filterClasses('all')" class="class-tab-btn active px-5 py-2.5 rounded-xl font-medium text-sm transition-all bg-gradient-to-r from-neonAccent to-neonAmber text-white shadow-md">All Programs</button>
+                <button onclick="filterClasses('strength')" class="class-tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition-all glass-card text-gray-400 hover:text-white">Strength</button>
+                <button onclick="filterClasses('hiit')" class="class-tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition-all glass-card text-gray-400 hover:text-white">HIIT & Cardio</button>
+                <button onclick="filterClasses('boxing')" class="class-tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition-all glass-card text-gray-400 hover:text-white">Boxing & Combat</button>
+                <button onclick="filterClasses('yoga')" class="class-tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition-all glass-card text-gray-400 hover:text-white">Yoga & Recovery</button>
+            </div>
+
+            <!-- Classes Grid -->
+            <div id="classes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Dynamic Content Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Elite Trainers Section -->
+    <section id="trainers" class="py-24 bg-cardBg/40 border-y border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-neonAccent font-semibold uppercase tracking-widest text-xs">World-Class Leadership</span>
+                <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mt-2">MEET OUR <span class="text-gradient">ELITE COACHES</span></h2>
+                <p class="text-gray-400 text-sm mt-3">Learn from industry-leading athletes and certified strength conditioning specialists dedicated to your transformation.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Coach Card 1 -->
+                <div class="glass-card rounded-2xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 border border-gray-800">
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?q=80&w=800&auto=format&fit=crop" 
+                             alt="Marcus Vance" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/800x1000/121216/ffffff?text=Marcus+Vance'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent opacity-90"></div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <span class="text-neonAccent font-semibold text-xs uppercase tracking-wider">Head Strength Coach</span>
+                            <h3 class="font-heading text-xl font-bold text-white">Marcus Vance</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="flex justify-between text-xs text-gray-400 border-b border-gray-800 pb-3">
+                            <span>Experience: <strong>10+ Yrs</strong></span>
+                            <span>Specialty: <strong>Hypertrophy</strong></span>
+                        </div>
+                        <button onclick="bookTrainer('Marcus Vance')" class="w-full py-2.5 rounded-lg bg-gray-800 hover:bg-neonAccent text-white font-semibold text-xs uppercase tracking-wider transition-colors duration-200">
+                            Book Session
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coach Card 2 -->
+                <div class="glass-card rounded-2xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 border border-gray-800">
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=800&auto=format&fit=crop" 
+                             alt="Elena Rostova" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/800x1000/121216/ffffff?text=Elena+Rostova'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent opacity-90"></div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <span class="text-neonAccent font-semibold text-xs uppercase tracking-wider">HIIT & Combat Specialist</span>
+                            <h3 class="font-heading text-xl font-bold text-white">Elena Rostova</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="flex justify-between text-xs text-gray-400 border-b border-gray-800 pb-3">
+                            <span>Experience: <strong>8+ Yrs</strong></span>
+                            <span>Specialty: <strong>Fat Loss/Boxing</strong></span>
+                        </div>
+                        <button onclick="bookTrainer('Elena Rostova')" class="w-full py-2.5 rounded-lg bg-gray-800 hover:bg-neonAccent text-white font-semibold text-xs uppercase tracking-wider transition-colors duration-200">
+                            Book Session
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coach Card 3 -->
+                <div class="glass-card rounded-2xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 border border-gray-800">
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800&auto=format&fit=crop" 
+                             alt="David Miller" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/800x1000/121216/ffffff?text=David+Miller'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent opacity-90"></div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <span class="text-neonAccent font-semibold text-xs uppercase tracking-wider">CrossFit & Endurance</span>
+                            <h3 class="font-heading text-xl font-bold text-white">David Miller</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="flex justify-between text-xs text-gray-400 border-b border-gray-800 pb-3">
+                            <span>Experience: <strong>7+ Yrs</strong></span>
+                            <span>Specialty: <strong>Stamina & Agility</strong></span>
+                        </div>
+                        <button onclick="bookTrainer('David Miller')" class="w-full py-2.5 rounded-lg bg-gray-800 hover:bg-neonAccent text-white font-semibold text-xs uppercase tracking-wider transition-colors duration-200">
+                            Book Session
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Coach Card 4 -->
+                <div class="glass-card rounded-2xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 border border-gray-800">
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=800&auto=format&fit=crop" 
+                             alt="Sophia Chen" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/800x1000/121216/ffffff?text=Sophia+Chen'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent opacity-90"></div>
+                        <div class="absolute bottom-4 left-4 right-4">
+                            <span class="text-neonAccent font-semibold text-xs uppercase tracking-wider">Mobility & Yoga Lead</span>
+                            <h3 class="font-heading text-xl font-bold text-white">Sophia Chen</h3>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="flex justify-between text-xs text-gray-400 border-b border-gray-800 pb-3">
+                            <span>Experience: <strong>9+ Yrs</strong></span>
+                            <span>Specialty: <strong>Flexibility & Recovery</strong></span>
+                        </div>
+                        <button onclick="bookTrainer('Sophia Chen')" class="w-full py-2.5 rounded-lg bg-gray-800 hover:bg-neonAccent text-white font-semibold text-xs uppercase tracking-wider transition-colors duration-200">
+                            Book Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive BMI Calculator Section -->
+    <section id="bmi" class="py-24 bg-darkBg relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Left Details -->
+                <div class="space-y-6">
+                    <span class="text-neonAccent font-semibold uppercase tracking-widest text-xs">Analytics & Insights</span>
+                    <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold text-white">CALCULATE YOUR <span class="text-gradient">BMI</span> INDEX</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Body Mass Index (BMI) provides a quick estimation of body fat composition based on height and weight. Use our instant interactive tool to gauge your starting point.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+                        <div class="glass-card p-4 rounded-xl border border-gray-800">
+                            <i class="fa-solid fa-heart-pulse text-neonAccent text-2xl mb-2"></i>
+                            <h4 class="font-bold text-white text-sm">Target Fat Burn</h4>
+                            <p class="text-xs text-gray-400">Tailored heart rate zones</p>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl border border-gray-800">
+                            <i class="fa-solid fa-dumbbell text-neonAmber text-2xl mb-2"></i>
+                            <h4 class="font-bold text-white text-sm">Custom Macros</h4>
+                            <p class="text-xs text-gray-400">Nutrition guidance included</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator Form Card -->
+                <div class="glass-card p-8 rounded-3xl border border-gray-800 relative">
+                    <div class="space-y-5">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-gray-400 mb-2">Height (cm)</label>
+                                <input type="number" id="bmi-height" placeholder="175" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neonAccent transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-gray-400 mb-2">Weight (kg)</label>
+                                <input type="number" id="bmi-weight" placeholder="70" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neonAccent transition-colors">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-gray-400 mb-2">Age</label>
+                                <input type="number" placeholder="25" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neonAccent transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-gray-400 mb-2">Gender</label>
+                                <select class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neonAccent transition-colors">
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button onclick="calculateBMI()" class="w-full bg-gradient-to-r from-neonAccent to-neonAmber text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition-all shadow-lg glow-effect">
+                            Calculate Now
+                        </button>
+
+                        <!-- BMI Result Box -->
+                        <div id="bmi-result-box" class="hidden p-4 rounded-2xl bg-gray-900/80 border border-gray-800 text-center space-y-2">
+                            <span class="text-xs uppercase text-gray-400 font-semibold">Your BMI Score</span>
+                            <div id="bmi-value" class="font-heading text-4xl font-extrabold text-neonAccent">22.9</div>
+                            <div id="bmi-status" class="text-sm font-semibold text-green-400">Normal Weight</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Membership Plans -->
+    <section id="pricing" class="py-24 bg-cardBg/30 border-t border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-neonAccent font-semibold uppercase tracking-widest text-xs">Flexible Memberships</span>
+                <h2 class="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mt-2">CHOOSE YOUR <span class="text-gradient">MEMBERSHIP</span></h2>
+                <p class="text-gray-400 text-sm mt-3">Select the ideal tier for your fitness journey. No hidden fees. Cancel anytime.</p>
+
+                <!-- Billing Toggle Switch -->
+                <div class="flex items-center justify-center gap-4 mt-8">
+                    <span id="monthly-label" class="text-sm font-semibold text-white">Monthly</span>
+                    <button id="pricing-toggle" onclick="toggleBilling()" class="w-14 h-8 bg-gray-800 rounded-full p-1 relative transition-colors focus:outline-none border border-gray-700">
+                        <div id="toggle-circle" class="w-6 h-6 bg-neonAccent rounded-full transition-transform duration-300 transform translate-x-0"></div>
+                    </button>
+                    <span id="annual-label" class="text-sm font-semibold text-gray-400">Annual <span class="text-neonAmber font-bold text-xs bg-neonAmber/10 px-2 py-0.5 rounded-full border border-neonAmber/30">Save 20%</span></span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+                <!-- Basic Plan -->
+                <div class="glass-card rounded-3xl p-8 border border-gray-800 flex flex-col justify-between hover:border-gray-700 transition-all">
+                    <div>
+                        <span class="text-gray-400 font-bold text-xs uppercase tracking-wider">Basic Standard</span>
+                        <h3 class="font-heading text-2xl font-bold text-white mt-1">STARTER</h3>
+                        <div class="my-6">
+                            <span class="font-heading text-4xl font-extrabold text-white pricing-value" data-monthly="$29" data-annual="$23">$29</span>
+                            <span class="text-gray-400 text-sm">/ month</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-gray-300">
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Standard Gym Access</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Locker & Shower Facilities</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Free WiFi</li>
+                            <li class="flex items-center gap-3 text-gray-500 line-through"><i class="fa-solid fa-xmark"></i> Group Fitness Classes</li>
+                            <li class="flex items-center gap-3 text-gray-500 line-through"><i class="fa-solid fa-xmark"></i> Personal Coach Consultation</li>
+                        </ul>
+                    </div>
+                    <button onclick="selectPlan('Starter')" class="w-full mt-8 py-3.5 rounded-xl border border-neonAccent text-neonAccent font-bold text-sm hover:bg-neonAccent hover:text-white transition-all">
+                        Select Starter
+                    </button>
+                </div>
+
+                <!-- Pro Plan (Popular Highlighted) -->
+                <div class="glass-card rounded-3xl p-8 border-2 border-neonAccent relative flex flex-col justify-between glow-effect transform md:-translate-y-4">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-neonAccent to-neonAmber text-white font-extrabold text-xs uppercase px-4 py-1 rounded-full shadow-md tracking-wider">
+                        Most Popular
+                    </div>
+                    <div>
+                        <span class="text-neonAccent font-bold text-xs uppercase tracking-wider">Full Experience</span>
+                        <h3 class="font-heading text-2xl font-bold text-white mt-1">PRO ATHLETE</h3>
+                        <div class="my-6">
+                            <span class="font-heading text-5xl font-extrabold text-white pricing-value" data-monthly="$59" data-annual="$47">$59</span>
+                            <span class="text-gray-400 text-sm">/ month</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-gray-300">
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> 24/7 Unlimited Access</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> All Group Fitness Classes</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Locker Room & Sauna</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> 1 Session / Mo Personal Trainer</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Nutrition Guide E-Book</li>
+                        </ul>
+                    </div>
+                    <button onclick="selectPlan('Pro Athlete')" class="w-full mt-8 py-3.5 rounded-xl bg-gradient-to-r from-neonAccent to-neonAmber text-white font-bold text-sm hover:opacity-90 transition-all shadow-md">
+                        Join Pro Plan
+                    </button>
+                </div>
+
+                <!-- VIP Plan -->
+                <div class="glass-card rounded-3xl p-8 border border-gray-800 flex flex-col justify-between hover:border-gray-700 transition-all">
+                    <div>
+                        <span class="text-gray-400 font-bold text-xs uppercase tracking-wider">Ultimate Luxury</span>
+                        <h3 class="font-heading text-2xl font-bold text-white mt-1">VIP ELITE</h3>
+                        <div class="my-6">
+                            <span class="font-heading text-4xl font-extrabold text-white pricing-value" data-monthly="$99" data-annual="$79">$99</span>
+                            <span class="text-gray-400 text-sm">/ month</span>
+                        </div>
+                        <ul class="space-y-3 text-sm text-gray-300">
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Everything in Pro</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Unlimited Personal Coaching</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Private VIP Lounge & Drinks</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Complimentary Guest Passes</li>
+                            <li class="flex items-center gap-3"><i class="fa-solid fa-check text-neonAccent"></i> Cryotherapy & Recovery</li>
+                        </ul>
+                    </div>
+                    <button onclick="selectPlan('VIP Elite')" class="w-full mt-8 py-3.5 rounded-xl border border-neonAccent text-neonAccent font-bold text-sm hover:bg-neonAccent hover:text-white transition-all">
+                        Get VIP Access
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials / Success Stories -->
+    <section class="py-24 bg-darkBg relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-neonAccent font-semibold uppercase tracking-widest text-xs">Proven Transformations</span>
+                <h2 class="font-heading text-3xl sm:text-4xl font-extrabold text-white mt-2">MEMBER <span class="text-gradient">SUCCESS STORIES</span></h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="glass-card p-6 rounded-2xl border border-gray-800 space-y-4">
+                    <div class="flex items-center gap-1 text-neonAmber text-sm">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"Aura Fitness completely revolutionized my workout mindset. Lost 25 lbs in 4 months with Coach Marcus!"</p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-neonAccent to-neonAmber flex items-center justify-center font-bold text-white">JD</div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Jason Drake</h4>
+                            <span class="text-xs text-gray-500">Member since 2024</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="glass-card p-6 rounded-2xl border border-gray-800 space-y-4">
+                    <div class="flex items-center gap-1 text-neonAmber text-sm">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"The dark high-energy atmosphere and top tier equipment are unparalleled. VIP membership is worth every cent."</p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-neonAccent to-neonAmber flex items-center justify-center font-bold text-white">SL</div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Sarah Lin</h4>
+                            <span class="text-xs text-gray-500">Member since 2023</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="glass-card p-6 rounded-2xl border border-gray-800 space-y-4">
+                    <div class="flex items-center gap-1 text-neonAmber text-sm">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-300 text-sm italic">"The HIIT boxing sessions with Elena are relentless in the best possible way. Supercharged my endurance!"</p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-neonAccent to-neonAmber flex items-center justify-center font-bold text-white">MK</div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">Michael K.</h4>
+                            <span class="text-xs text-gray-500">Member since 2025</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer & Contact Section -->
+    <footer id="contact" class="bg-cardBg border-t border-gray-800 pt-16 pb-12 text-gray-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-gray-800">
+                <!-- Brand Info -->
+                <div class="space-y-4">
+                    <a href="#" class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-gradient-to-tr from-neonAccent to-neonAmber flex items-center justify-center">
+                            <i class="fa-solid fa-bolt text-white text-lg"></i>
+                        </div>
+                        <span class="font-heading text-xl font-extrabold text-white">AURA<span class="text-neonAccent">.FIT</span></span>
+                    </a>
+                    <p class="text-gray-400 text-xs leading-relaxed">
+                        Hyper-modern strength facilities built for elite performance, peak aesthetics, and body transformation.
+                    </p>
+                    <div class="flex space-x-4 pt-2">
+                        <a href="#" class="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:text-neonAccent hover:border-neonAccent transition-all"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:text-neonAccent hover:border-neonAccent transition-all"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-lg bg-gray-900 border border-gray-800 flex items-center justify-center text-gray-400 hover:text-neonAccent hover:border-neonAccent transition-all"><i class="fa-brands fa-x-twitter"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-bold text-white text-sm mb-4">NAVIGATION</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#home" class="hover:text-neonAccent transition-colors">Home</a></li>
+                        <li><a href="#classes" class="hover:text-neonAccent transition-colors">Class Schedule</a></li>
+                        <li><a href="#trainers" class="hover:text-neonAccent transition-colors">Our Trainers</a></li>
+                        <li><a href="#bmi" class="hover:text-neonAccent transition-colors">BMI Tool</a></li>
+                        <li><a href="#pricing" class="hover:text-neonAccent transition-colors">Membership Pricing</a></li>
+                    </ul>
+                </div>
+
+                <!-- Hours & Location -->
+                <div>
+                    <h4 class="font-bold text-white text-sm mb-4">OPENING HOURS</h4>
+                    <ul class="space-y-2 text-xs text-gray-400">
+                        <li class="flex justify-between"><span>Mon - Fri:</span> <span class="text-white">5:00 AM - 11:00 PM</span></li>
+                        <li class="flex justify-between"><span>Saturday:</span> <span class="text-white">6:00 AM - 10:00 PM</span></li>
+                        <li class="flex justify-between"><span>Sunday:</span> <span class="text-white">7:00 AM - 8:00 PM</span></li>
+                        <li class="pt-2 text-neonAccent font-semibold">VIP Members: 24/7 Access</li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h4 class="font-bold text-white text-sm mb-4">JOIN THE CLUB NEWSLETTER</h4>
+                    <p class="text-xs text-gray-400 mb-3">Get nutrition guides and workout tips directly in your inbox.</p>
+                    <form onsubmit="handleNewsletter(event)" class="space-y-2">
+                        <input type="email" required placeholder="Enter your email" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-neonAccent">
+                        <button type="submit" class="w-full bg-neonAccent text-white font-semibold text-xs py-2 rounded-lg hover:bg-neonAmber transition-colors">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-500 gap-4">
+                <p>&copy; 2026 AURA FITNESS INC. ALL RIGHTS RESERVED.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-400">Terms of Service</a>
+                    <a href="#" class="hover:text-gray-400">Cookie Preferences</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Authentication Modal (Sign In / Sign Up) -->
+    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300">
+        <div class="glass-card w-full max-w-md rounded-3xl p-8 border border-gray-800 relative shadow-2xl">
+            <!-- Close Button -->
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-gray-400 hover:text-white text-lg p-2">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Modal Tabs -->
+            <div class="flex border-b border-gray-800 mb-6">
+                <button id="tab-signin" onclick="switchAuthTab('signin')" class="w-1/2 pb-3 font-heading font-bold text-center border-b-2 border-neonAccent text-white">
+                    Sign In
+                </button>
+                <button id="tab-signup" onclick="switchAuthTab('signup')" class="w-1/2 pb-3 font-heading font-bold text-center border-b-2 border-transparent text-gray-400 hover:text-white">
+                    Create Account
+                </button>
+            </div>
+
+            <!-- Sign In Form -->
+            <form id="form-signin" onsubmit="handleAuthSubmit(event, 'Sign In')" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Email Address</label>
+                    <input type="email" required placeholder="name@example.com" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neonAccent">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Password</label>
+                    <div class="relative">
+                        <input type="password" id="signin-pass" required placeholder="••••••••" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neonAccent">
+                        <button type="button" onclick="togglePasswordVisibility('signin-pass')" class="absolute right-3 top-3.5 text-gray-400 text-sm">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <label class="flex items-center gap-2 text-gray-400 cursor-pointer">
+                        <input type="checkbox" class="rounded bg-gray-900 border-gray-800 text-neonAccent focus:ring-0"> Remember me
+                    </label>
+                    <a href="#" class="text-neonAccent hover:underline">Forgot password?</a>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-neonAccent to-neonAmber text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition-all shadow-lg glow-effect">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="form-signup" onsubmit="handleAuthSubmit(event, 'Sign Up')" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Full Name</label>
+                    <input type="text" required placeholder="John Doe" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neonAccent">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Email Address</label>
+                    <input type="email" required placeholder="name@example.com" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neonAccent">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Password</label>
+                    <div class="relative">
+                        <input type="password" id="signup-pass" required placeholder="••••••••" class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neonAccent">
+                        <button type="button" onclick="togglePasswordVisibility('signup-pass')" class="absolute right-3 top-3.5 text-gray-400 text-sm">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Primary Fitness Goal</label>
+                    <select class="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-neonAccent">
+                        <option>Muscle Gain & Hypertrophy</option>
+                        <option>Fat Loss & Conditioning</option>
+                        <option>Endurance & Athletics</option>
+                        <option>Mobility & Flexibility</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-neonAccent to-neonAmber text-white font-bold py-3.5 rounded-xl hover:opacity-90 transition-all shadow-lg glow-effect">
+                    Create Account
+                </button>
+            </form>
+
+            <!-- Social Logins -->
+            <div class="mt-6 pt-6 border-t border-gray-800 text-center">
+                <span class="text-xs text-gray-400">Or continue with</span>
+                <div class="flex gap-4 mt-3">
+                    <button onclick="showToast('Google login connected')" class="w-1/2 py-2.5 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-700 text-white text-xs font-semibold flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-google text-red-500"></i> Google
+                    </button>
+                    <button onclick="showToast('Apple login connected')" class="w-1/2 py-2.5 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-700 text-white text-xs font-semibold flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-apple"></i> Apple
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Programs / Classes Data
+        const classData = [
+            {
+                title: "Hypertrophy Overload",
+                category: "strength",
+                duration: "60 mins",
+                intensity: "High",
+                trainer: "Marcus Vance",
+                image: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=600&auto=format&fit=crop",
+                desc: "Focus on compound powerlifting, bodybuilding techniques, and targeted mass building."
+            },
+            {
+                title: "Metabolic HIIT Blast",
+                category: "hiit",
+                duration: "45 mins",
+                intensity: "Extreme",
+                trainer: "Elena Rostova",
+                image: "https://images.unsplash.com/photo-1517963879433-6ad2b056d712?q=80&w=600&auto=format&fit=crop",
+                desc: "Rapid-fire calorie burner using kettlebells, battle ropes, and explosive bodyweight movements."
+            },
+            {
+                title: "Iron Boxing Combat",
+                category: "boxing",
+                duration: "50 mins",
+                intensity: "High",
+                trainer: "Elena Rostova",
+                image: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=600&auto=format&fit=crop",
+                desc: "Heavy bag drill intervals, footwork mechanics, and intense core conditioning."
+            },
+            {
+                title: "Zen Recovery & Mobility",
+                category: "yoga",
+                duration: "60 mins",
+                intensity: "Low-Med",
+                trainer: "Sophia Chen",
+                image: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=600&auto=format&fit=crop",
+                desc: "Deep tissue stretch, joint mobility, breathwork, and muscular recovery guidance."
+            },
+            {
+                title: "CrossFit Stamina Challenge",
+                category: "hiit",
+                duration: "55 mins",
+                intensity: "Extreme",
+                trainer: "David Miller",
+                image: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=600&auto=format&fit=crop",
+                desc: "High WOD intensity featuring Olympic lifts, plyometrics, and stamina pushes."
+            },
+            {
+                title: "Pure Power Bench & Squat",
+                category: "strength",
+                duration: "60 mins",
+                intensity: "High",
+                trainer: "Marcus Vance",
+                image: "https://images.unsplash.com/photo-1534367507873-d2d7e24c797f?q=80&w=600&auto=format&fit=crop",
+                desc: "Heavy barbell work aimed at breaking personal max records safely."
+            }
+        ];
+
+        // Mobile Menu Drawer Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Render Classes Grid
+        function renderClasses(category = 'all') {
+            const container = document.getElementById('classes-grid');
+            container.innerHTML = '';
+
+            const filtered = category === 'all' ? classData : classData.filter(c => c.category === category);
+
+            filtered.forEach(c => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-2xl overflow-hidden border border-gray-800 hover:border-neonAccent transition-all duration-300 group flex flex-col justify-between";
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="${c.image}" alt="${c.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/121216/ffffff?text=Aura+Class'">
+                            <span class="absolute top-3 right-3 bg-darkBg/80 backdrop-blur-md border border-gray-700 text-neonAccent text-xs font-semibold px-2.5 py-1 rounded-full uppercase tracking-wider">${c.intensity}</span>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <div class="flex items-center justify-between text-xs text-gray-400">
+                                <span><i class="fa-regular fa-clock text-neonAccent mr-1"></i> ${c.duration}</span>
+                                <span><i class="fa-regular fa-user text-neonAmber mr-1"></i> ${c.trainer}</span>
+                            </div>
+                            <h3 class="font-heading text-xl font-bold text-white group-hover:text-neonAccent transition-colors">${c.title}</h3>
+                            <p class="text-xs text-gray-400 leading-relaxed">${c.desc}</p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6">
+                        <button onclick="bookClass('${c.title}')" class="w-full py-2.5 rounded-xl border border-gray-700 hover:border-neonAccent bg-gray-900/50 hover:bg-neonAccent text-white font-semibold text-xs uppercase tracking-wider transition-all">
+                            Book Class Slot
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Filter Buttons Styling & Handling
+        function filterClasses(category) {
+            document.querySelectorAll('.class-tab-btn').forEach(btn => {
+                btn.className = "class-tab-btn px-5 py-2.5 rounded-xl font-medium text-sm transition-all glass-card text-gray-400 hover:text-white";
+            });
+            event.currentTarget.className = "class-tab-btn active px-5 py-2.5 rounded-xl font-medium text-sm transition-all bg-gradient-to-r from-neonAccent to-neonAmber text-white shadow-md";
+            renderClasses(category);
+        }
+
+        // Auth Modal Handlers
+        function openAuthModal(tab = 'signin') {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            switchAuthTab(tab);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function switchAuthTab(tab) {
+            const signinForm = document.getElementById('form-signin');
+            const signupForm = document.getElementById('form-signup');
+            const tabSignin = document.getElementById('tab-signin');
+            const tabSignup = document.getElementById('tab-signup');
+
+            if(tab === 'signin') {
+                signinForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                tabSignin.className = "w-1/2 pb-3 font-heading font-bold text-center border-b-2 border-neonAccent text-white";
+                tabSignup.className = "w-1/2 pb-3 font-heading font-bold text-center border-b-2 border-transparent text-gray-400 hover:text-white";
+            } else {
+                signupForm.classList.remove('hidden');
+                signinForm.classList.add('hidden');
+                tabSignup.className = "w-1/2 pb-3 font-heading font-bold text-center border-b-2 border-neonAccent text-white";
+                tabSignin.className = "w-1/2 pb-3 font-heading font-bold text-center border-b-2 border-transparent text-gray-400 hover:text-white";
+            }
+        }
+
+        function togglePasswordVisibility(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function handleAuthSubmit(e, action) {
+            e.preventDefault();
+            closeAuthModal();
+            showToast(`${action} successful! Welcome to Aura Fitness.`);
+        }
+
+        // Pricing Toggle Switch
+        let isAnnual = false;
+        function toggleBilling() {
+            isAnnual = !isAnnual;
+            const circle = document.getElementById('toggle-circle');
+            const monthlyLabel = document.getElementById('monthly-label');
+            const annualLabel = document.getElementById('annual-label');
+            const values = document.querySelectorAll('.pricing-value');
+
+            if(isAnnual) {
+                circle.style.transform = 'translateX(24px)';
+                monthlyLabel.className = 'text-sm font-semibold text-gray-400';
+                annualLabel.className = 'text-sm font-semibold text-white';
+                values.forEach(v => v.textContent = v.dataset.annual);
+            } else {
+                circle.style.transform = 'translateX(0px)';
+                monthlyLabel.className = 'text-sm font-semibold text-white';
+                annualLabel.className = 'text-sm font-semibold text-gray-400';
+                values.forEach(v => v.textContent = v.dataset.monthly);
+            }
+        }
+
+        // Interactive BMI Calculation Tool
+        function calculateBMI() {
+            const h = parseFloat(document.getElementById('bmi-height').value);
+            const w = parseFloat(document.getElementById('bmi-weight').value);
+            const box = document.getElementById('bmi-result-box');
+            const val = document.getElementById('bmi-value');
+            const status = document.getElementById('bmi-status');
+
+            if(!h || !w || h <= 0 || w <= 0) {
+                showToast("Please enter valid height and weight values.");
+                return;
+            }
+
+            const bmi = (w / ((h / 100) * (h / 100))).toFixed(1);
+            box.classList.remove('hidden');
+            val.textContent = bmi;
+
+            if(bmi < 18.5) {
+                status.textContent = "Underweight - Focus on muscle gain";
+                status.className = "text-sm font-semibold text-yellow-400";
+            } else if(bmi >= 18.5 && bmi < 24.9) {
+                status.textContent = "Normal / Athletic Category";
+                status.className = "text-sm font-semibold text-green-400";
+            } else if(bmi >= 25 && bmi < 29.9) {
+                status.textContent = "Overweight - Optimal for HIIT focus";
+                status.className = "text-sm font-semibold text-orange-400";
+            } else {
+                status.textContent = "High Category - Customized program suggested";
+                status.className = "text-sm font-semibold text-neonAccent";
+            }
+        }
+
+        // Action Handlers & Toast System
+        function bookClass(title) {
+            showToast(`Slot reserved for "${title}". Check your email for confirmation.`);
+        }
+
+        function bookTrainer(name) {
+            showToast(`1-on-1 Consultation request sent to ${name}.`);
+        }
+
+        function selectPlan(plan) {
+            openAuthModal('signup');
+            showToast(`Selected ${plan} plan. Create your account to complete.`);
+        }
+
+        function handleNewsletter(e) {
+            e.preventDefault();
+            e.target.reset();
+            showToast("Successfully subscribed to Aura Newsletter!");
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "glass-card border border-neonAccent text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-semibold pointer-events-auto transform translate-y-2 transition-all duration-300";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-neonAccent text-base"></i> ${msg}`;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Initialize default view on load
+        window.onload = function() {
+            renderClasses('all');
+        };
+    </script>
+</body>
+</html>
